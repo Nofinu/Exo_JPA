@@ -1,6 +1,6 @@
-package dao;
+package Exo1.dao;
 
-import Entity.Todo;
+import Exo1.Entity.Todo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

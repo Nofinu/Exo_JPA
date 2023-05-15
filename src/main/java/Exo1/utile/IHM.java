@@ -1,10 +1,8 @@
-package utile;
+package Exo1.utile;
 
-import Entity.Todo;
-import dao.TodoDAO;
+import Exo1.Entity.Todo;
+import Exo1.dao.TodoDAO;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
