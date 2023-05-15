@@ -31,7 +31,7 @@ public class TodoDAO {
         Todo todo = _em.find(Todo.class,id);
         todo.setFinish(true);
 
-        _em.flush();
+        _em.persist(todo);
         _em.getTransaction().commit();
         _em.close();
     }
