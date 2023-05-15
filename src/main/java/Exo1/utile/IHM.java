@@ -37,6 +37,8 @@ public class IHM {
                 case 4:
                     deleteTodo();
                     break;
+                case 0:
+                    break;
                 default :
                     System.out.println("entrer une valeur valide ");
                     break;
