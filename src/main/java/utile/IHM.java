@@ -1,6 +1,7 @@
 package utile;
 
 import Entity.Todo;
+import dao.TodoDAO;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class IHM {
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa_exo");
     private Scanner scanner;
-    private  EntityManager em;
+    private TodoDAO todoDAO;
 
     public IHM(){
         scanner = new Scanner(System.in);
@@ -59,60 +60,39 @@ public class IHM {
     }
 
     private void addTodo (){
-        em = emf.createEntityManager();
-        em.getTransaction().begin();
-
         System.out.println("------ add to do ----");
         System.out.println("nom de la to do :");
         String title = scanner.nextLine();
         Todo todo = new Todo(title);
 
-        em.persist(todo);
-        em.getTransaction().commit();
-        em.close();
+        todoDAO = new TodoDAO(emf);
+        todoDAO.addAction(todo);
     }
 
     private void showAllTodo (){
-        em = emf.createEntityManager();
         List<Todo> todoList = null;
-
         System.out.println("------ afficher toute les todo -------");
-        todoList = em.createQuery("select t from Todo t",Todo.class).getResultList();
+        todoDAO = new TodoDAO(emf);
+        todoList = todoDAO.getAll();
         todoList.forEach(e -> System.out.println(e));
-
-        em.close();
     }
 
     private void changeStatus (){
-        em = emf.createEntityManager();
-        em.getTransaction().begin();
-
         System.out.println("------- changement du statut d'une todo");
         System.out.println("id de la todo :");
         int id = scanner.nextInt();
         scanner.nextLine();
-
-        Todo todo = em.find(Todo.class,id);
-        todo.setFinish(true);
-
-        em.flush();
-        em.getTransaction().commit();
-        em.close();
+        todoDAO = new TodoDAO(emf);
+        todoDAO.changeStatusAction(id);
     }
 
     private void deleteTodo (){
-        em = emf.createEntityManager();
-        em.getTransaction().begin();
-
         System.out.println("--------- dsupression de todo ---------");
         System.out.println("id de la todo :");
         int id = scanner.nextInt();
         scanner.nextLine();
-        Todo todo = em.find(Todo.class,id);
-        em.remove(todo);
-
-        em.getTransaction().commit();
-        em.close();
+        todoDAO = new TodoDAO(emf);
+        todoDAO.deleteAction(id);
     }
 
 }
