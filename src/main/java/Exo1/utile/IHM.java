@@ -10,9 +10,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class IHM {
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa_exo");
@@ -43,6 +45,12 @@ public class IHM {
                 case 4:
                     deleteTodo();
                     break;
+                case 5:
+                    showTodoBefore();
+                    break;
+                case 6:
+                    showTodoBetween();
+                    break;
                 case 0:
                     break;
                 default :
@@ -62,6 +70,8 @@ public class IHM {
         System.out.println("2-- afficher toute les taches");
         System.out.println("3-- marquer une tache comme fini");
         System.out.println("4-- supprimer une tache");
+        System.out.println("5-- afficher les todo avant une date");
+        System.out.println("6-- afficher les todos entre 2 dates");
         System.out.println("0-- quitter");
     }
 
@@ -76,20 +86,14 @@ public class IHM {
 
         System.out.println("date format(dd-MM-yyyy) :");
         String dateString = scanner.nextLine();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = null;
-        try {
-            date = dateFormat.parse(dateString);
-        } catch (ParseException e) {
-            date = new Date("01/01/2001");
-        }
+        LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         System.out.println("priorité de la tache :");
         int priority = scanner.nextInt();
         scanner.nextLine();
 
         Todo todo = new Todo(title);
-        Task task = new Task(description,date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),priority,todo);
+        Task task = new Task(description,date,priority,todo);
         todo.setTask(task);
 
         todoDAO = new TodoDAO(emf);
@@ -120,6 +124,36 @@ public class IHM {
         scanner.nextLine();
         todoDAO = new TodoDAO(emf);
         todoDAO.deleteAction(id);
+    }
+
+    private void showTodoBefore (){
+        System.out.println("-------- affichage des todo avant une date --------");
+        System.out.println("date format(dd-MM-yyyy) :");
+        String dateString = scanner.nextLine();
+        LocalDate beforeDate = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        todoDAO = new TodoDAO(emf);
+        List<Todo> todos = todoDAO.getAll();
+        List<Todo> todoListBefore =todos.stream().filter(t -> t.getTask().getDate().isBefore(beforeDate)).toList();
+        todoListBefore.forEach(e-> System.out.println(e));
+    }
+
+    private void showTodoBetween (){
+        System.out.println("-------- affichage des todo entre 2 dates --------");
+        System.out.println("date debut format(dd-MM-yyyy) :");
+        String dateString = scanner.nextLine();
+        LocalDate dateStart = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        System.out.println("date fin format(dd-MM-yyyy) :");
+        dateString = scanner.nextLine();
+        LocalDate dateEnd = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        todoDAO = new TodoDAO(emf);
+        List<Todo> todos = todoDAO.getAll();
+        List<Todo> todoListBefore =todos.stream()
+                .filter(t -> t.getTask().getDate().isBefore(dateEnd))
+                .filter(t-> t.getTask().getDate().isAfter(dateStart)).toList();
+        todoListBefore.forEach(e-> System.out.println(e));
     }
 
 }
