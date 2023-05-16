@@ -4,6 +4,8 @@ import Exo1.Entity.Todo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import java.time.LocalDate;
 import java.util.List;
 
 public class TodoDAO {
@@ -43,5 +45,14 @@ public class TodoDAO {
 
         _em.getTransaction().commit();
         _em.close();
+    }
+
+    public List<Todo> getAllBetweenDate (LocalDate startDate,LocalDate endDate){
+        Query query = _em.createQuery("select t from Todo t where t.task.date < :endDate and t.task.date >:startDate ",Todo.class);
+        query.setParameter("startDate",startDate);
+        query.setParameter("endDate",endDate);
+        List<Todo> todos =query.getResultList();
+        _em.close();
+        return todos;
     }
 }

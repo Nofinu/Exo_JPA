@@ -135,7 +135,7 @@ public class IHM {
         todoDAO = new TodoDAO(emf);
         List<Todo> todos = todoDAO.getAll();
         List<Todo> todoListBefore =todos.stream().filter(t -> t.getTask().getDate().isBefore(beforeDate)).toList();
-        todoListBefore.forEach(e-> System.out.println(e));
+        todoListBefore.forEach(System.out::println);
     }
 
     private void showTodoBetween (){
@@ -149,11 +149,8 @@ public class IHM {
         LocalDate dateEnd = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         todoDAO = new TodoDAO(emf);
-        List<Todo> todos = todoDAO.getAll();
-        List<Todo> todoListBefore =todos.stream()
-                .filter(t -> t.getTask().getDate().isBefore(dateEnd))
-                .filter(t-> t.getTask().getDate().isAfter(dateStart)).toList();
-        todoListBefore.forEach(e-> System.out.println(e));
+        List<Todo> todos = todoDAO.getAllBetweenDate(dateStart,dateEnd);
+        todos.forEach(System.out::println);
     }
 
 }
