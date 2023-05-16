@@ -1,10 +1,16 @@
 package Exo1.utile;
 
+import Exo1.Entity.Task;
 import Exo1.Entity.Todo;
 import Exo1.dao.TodoDAO;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -63,7 +69,28 @@ public class IHM {
         System.out.println("------ add to do ----");
         System.out.println("nom de la to do :");
         String title = scanner.nextLine();
+
+
+        System.out.println("description de la tache :");
+        String description = scanner.nextLine();
+
+        System.out.println("date format(dd-MM-yyyy) :");
+        String dateString = scanner.nextLine();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            date = new Date("01/01/2001");
+        }
+
+        System.out.println("priorité de la tache :");
+        int priority = scanner.nextInt();
+        scanner.nextLine();
+
         Todo todo = new Todo(title);
+        Task task = new Task(description,date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),priority,todo);
+        todo.setTask(task);
 
         todoDAO = new TodoDAO(emf);
         todoDAO.addAction(todo);
