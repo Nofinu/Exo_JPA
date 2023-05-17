@@ -207,12 +207,8 @@ public class IHM {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        userDAO = new UserDAO(emf);
-        User user = userDAO.findUserById(id);
-        if(user != null){
-            userDAO = new UserDAO(emf);
-            userDAO.deleteUser(user);
-        }
+        userDAO= new UserDAO(emf);
+        userDAO.deleteUser(id);
     }
 
 }

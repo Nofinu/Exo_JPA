@@ -9,7 +9,7 @@ public class User {
     @GeneratedValue
     private int id_user;
     private String name;
-    @OneToMany (mappedBy = "user",cascade = CascadeType.REMOVE)
+    @OneToMany (mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Todo> todos;
 
     public User(String name) {

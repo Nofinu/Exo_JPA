@@ -25,10 +25,13 @@ public class UserDAO {
         return user;
     }
 
-    public void deleteUser (User user){
+    public void deleteUser (int id){
         _em.getTransaction().begin();
-        _em.remove(user);
-        _em.getTransaction().commit();
+        User user = _em.find(User.class,id);
+        if(user != null){
+            _em.remove(user);
+            _em.getTransaction().commit();
+        }
         _em.close();
     }
 }

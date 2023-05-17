@@ -63,7 +63,6 @@ public class Todo {
                 "todo_id=" + todo_id +
                 ", title='" + title + '\'' +
                 ", finish=" + finish +
-                ", task=" + task +
-                ", user ="+user;
+                ", task=" + task ;
     }
 }
