@@ -18,7 +18,7 @@ public class Todo {
     @JoinColumn(name = "id_user")
     private User user;
 
-    @ManyToMany(mappedBy = "todos")
+    @ManyToMany(mappedBy = "todos",fetch = FetchType.EAGER)
     private List<Category> categoryList = new ArrayList<>();
 
     public Todo() {
@@ -88,6 +88,7 @@ public class Todo {
                 "todo_id=" + todo_id +
                 ", title='" + title + '\'' +
                 ", finish=" + finish +
-                ", task=" + task ;
+                ", task=" + task +
+                ", Category="+ categoryList;
     }
 }
