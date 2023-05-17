@@ -129,9 +129,12 @@ public class IHM {
     private void showAllTodo (){
         List<Todo> todoList = null;
         System.out.println("------ afficher toute les todo -------");
+        System.out.println("false: todo en cours / true: todo fini");
+        boolean status = scanner.nextBoolean();
+        scanner.nextLine();
         todoDAO = new TodoDAO(emf);
-        todoList = todoDAO.getAll();
-        todoList.forEach(e -> System.out.println(e));
+        todoList = todoDAO.getAllByStatus(status);
+        todoList.forEach(System.out::println);
     }
 
     private void changeStatus (){
@@ -195,10 +198,15 @@ public class IHM {
         int id = scanner.nextInt();
         scanner.nextLine();
 
+        System.out.println("------ afficher toute les todo -------");
+        System.out.println("false: todo en cours / true: todo fini");
+        boolean status = scanner.nextBoolean();
+        scanner.nextLine();
+
         userDAO = new UserDAO(emf);
         User user = userDAO.findUserById(id);
         System.out.println(user.getName()+" :");
-        user.getTodos().forEach(System.out::println);
+        user.getTodos().stream().filter(t ->t.isFinish() == status).forEach(System.out::println);
     }
 
     private void deleteUser (){

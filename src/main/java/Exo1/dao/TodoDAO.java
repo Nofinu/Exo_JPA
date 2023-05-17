@@ -22,6 +22,15 @@ public class TodoDAO {
         _em.close();
     }
 
+    public List<Todo> getAllByStatus (boolean id){
+        List<Todo> todos = null;
+        Query query = _em.createQuery("select t from Todo t where t.finish = :status",Todo.class);
+        query.setParameter("status",id);
+        todos = query.getResultList();
+        _em.close();
+        return todos;
+    }
+
     public List<Todo> getAll (){
         List<Todo> todos = _em.createQuery("select t from Todo t",Todo.class).getResultList();
         _em.close();
