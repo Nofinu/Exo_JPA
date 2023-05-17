@@ -6,7 +6,7 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_user;
     private String name;
     @OneToMany (mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)

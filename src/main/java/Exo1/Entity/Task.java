@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 public class Task {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int task_id;
     private String description ;
     private LocalDate date;

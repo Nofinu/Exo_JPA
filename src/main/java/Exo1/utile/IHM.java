@@ -1,8 +1,10 @@
 package Exo1.utile;
 
+import Exo1.Entity.Category;
 import Exo1.Entity.Task;
 import Exo1.Entity.Todo;
 import Exo1.Entity.User;
+import Exo1.dao.CategoryDAO;
 import Exo1.dao.TodoDAO;
 import Exo1.dao.UserDAO;
 
@@ -23,6 +25,7 @@ public class IHM {
     private Scanner scanner;
     private TodoDAO todoDAO;
     private UserDAO userDAO;
+    private CategoryDAO categoryDAO;
 
     public IHM(){
         scanner = new Scanner(System.in);
@@ -65,6 +68,21 @@ public class IHM {
                 case 10:
                     researchByName();
                     break;
+                case 11:
+                    addCategoryAction();
+                    break;
+                case 12 :
+                    deleteCategoryAction();
+                    break;
+                case 13:
+                    addTodoToCategory();
+                    break;
+                case 14:
+                    showTodoFromCategory();
+                    break;
+                case 15:
+                    deleteTodoFromCategory();
+                    break;
                 case 0:
                     break;
                 default :
@@ -86,10 +104,18 @@ public class IHM {
         System.out.println("4-- supprimer une tache");
         System.out.println("5-- afficher les todo avant une date");
         System.out.println("6-- afficher les todos entre 2 dates");
+        System.out.println("-------------------------------");
         System.out.println("7-- ajouter un utilisateur");
         System.out.println("8-- afficher toute les tache d'un utilisateur");
+        System.out.println("------------------------------");
         System.out.println("9-- supprimer un utilisateur");
         System.out.println("10-- recherche par nom ");
+        System.out.println("----------------------");
+        System.out.println("11-- ajouter une catégorie");
+        System.out.println("12-- supprimer une catégorie");
+        System.out.println("13-- ajouter une categorie a une todo");
+        System.out.println("14-- afficher les todo d'une categorie ");
+        System.out.println("15-- supprimer une todo d'une categorie");
         System.out.println("0-- quitter");
     }
 
@@ -242,6 +268,64 @@ public class IHM {
             users.forEach(u -> u.getTodos().forEach(System.out::println));
 
         }
+    }
+
+    private void addCategoryAction (){
+        System.out.println("------- ajout d'une categorie ------");
+        System.out.println("nom de la categorie :");
+        String name = scanner.nextLine();
+
+        Category category = new Category(name);
+        categoryDAO = new CategoryDAO(emf);
+        categoryDAO.addCategory(category);
+    }
+
+    private void deleteCategoryAction (){
+        System.out.println("------- suppresion d'une categorie ------");
+        System.out.println("id de la categorie :");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        categoryDAO = new CategoryDAO(emf);
+        categoryDAO.deleteCategory(id);
+    }
+
+    private void addTodoToCategory (){
+        System.out.println("----- ajouter une todo a une category -----");
+        System.out.println("id de la todo :");
+        int idTodo = scanner.nextInt();
+        System.out.println("id de la category :");
+        int  idCategory = scanner.nextInt();
+
+        categoryDAO = new CategoryDAO(emf);
+        categoryDAO.addTodoToCategory(idTodo,idCategory);
+    }
+
+    private void showTodoFromCategory (){
+        System.out.println("------- affichage des todo par leur categorie --------");
+        System.out.println("id de la categorie :");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        categoryDAO = new CategoryDAO(emf);
+        Category category = categoryDAO.findById(id);
+        if(category != null){
+            category.getTodos().forEach(System.out::println);
+        }else{
+            System.out.println("aucune categorie trouver");
+        }
+    }
+
+    private void deleteTodoFromCategory (){
+        System.out.println("----- suppresion d'une todo d'une categorie");
+        System.out.println("id de la categorie :");
+        int idCategory = scanner.nextInt();
+        System.out.println("id de la todo :");
+        int idTodo = scanner.nextInt();
+        scanner.nextLine();
+
+        categoryDAO = new CategoryDAO(emf);
+        categoryDAO.deleteTodoFromCategory(idTodo,idCategory);
     }
 
 }

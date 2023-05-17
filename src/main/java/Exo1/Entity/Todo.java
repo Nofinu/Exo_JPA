@@ -1,6 +1,8 @@
 package Exo1.Entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Todo {
@@ -15,6 +17,9 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name = "id_user")
     private User user;
+
+    @ManyToMany(mappedBy = "todos")
+    private List<Category> categoryList = new ArrayList<>();
 
     public Todo() {
     }
@@ -33,20 +38,39 @@ public class Todo {
         this.title = title;
     }
 
-    public boolean isFinish() {
-        return finish;
-    }
-
-    public void setFinish(boolean finish) {
-        this.finish = finish;
-    }
-
     public int getTodo_id() {
         return todo_id;
     }
 
     public void setTodo_id(int todo_id) {
         this.todo_id = todo_id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+
+    public void addCategory(Category categoryList) {
+        this.categoryList.add(categoryList) ;
+    }
+    public void removeCategory(Category categoryList) {
+        this.categoryList.remove(categoryList) ;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
     }
 
     public Task getTask() {
@@ -56,6 +80,7 @@ public class Todo {
     public void setTask(Task task) {
         this.task = task;
     }
+
 
     @Override
     public String toString() {
