@@ -1,6 +1,7 @@
 package Exo1.dao;
 
 import Exo1.Entity.Todo;
+import Exo1.Entity.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class TodoDAO {
-    private EntityManager _em;
+    private final EntityManager _em;
 
     public TodoDAO(EntityManagerFactory emf) {
         this._em = emf.createEntityManager();
@@ -60,8 +61,15 @@ public class TodoDAO {
         Query query = _em.createQuery("select t from Todo t where t.task.date < :endDate and t.task.date >:startDate ",Todo.class);
         query.setParameter("startDate",startDate);
         query.setParameter("endDate",endDate);
-        List<Todo> todos =query.getResultList();
+        List<Todo> todos = query.getResultList();
         _em.close();
         return todos;
+    }
+
+    public List<Todo> findBytitle (String title){
+        Query query = _em.createQuery("select t from Todo t where t.title like :title",Todo.class);
+        query.setParameter("title","%"+title+"%");
+        List<Todo> todos = query.getResultList();
+        return todos ;
     }
 }

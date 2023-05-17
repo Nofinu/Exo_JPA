@@ -62,6 +62,9 @@ public class IHM {
                     break;
                 case 9:
                     deleteUser();
+                case 10:
+                    researchByName();
+                    break;
                 case 0:
                     break;
                 default :
@@ -86,6 +89,7 @@ public class IHM {
         System.out.println("7-- ajouter un utilisateur");
         System.out.println("8-- afficher toute les tache d'un utilisateur");
         System.out.println("9-- supprimer un utilisateur");
+        System.out.println("10-- recherche par nom ");
         System.out.println("0-- quitter");
     }
 
@@ -217,6 +221,27 @@ public class IHM {
 
         userDAO= new UserDAO(emf);
         userDAO.deleteUser(id);
+    }
+
+    private void researchByName (){
+        System.out.println("---- recherche par nom -------");
+        System.out.println("recherche de todo : todo / recherche d'utilisateur : user :");
+        String input = scanner.nextLine();
+        if(input.equals("todo")){
+            System.out.println("entrer le titre de la todo rechercher :");
+            String todoTitle = scanner.nextLine();
+            todoDAO = new TodoDAO(emf);
+            List<Todo> todos = todoDAO.findBytitle(todoTitle);
+            todos.forEach(System.out::println);
+
+        }else{
+            System.out.println("entrer le nom de l'utilisateur:");
+            String nameUser = scanner.nextLine();
+            userDAO = new UserDAO(emf);
+            List<User> users = userDAO.findByName(nameUser);
+            users.forEach(u -> u.getTodos().forEach(System.out::println));
+
+        }
     }
 
 }

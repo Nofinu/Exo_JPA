@@ -4,9 +4,11 @@ import Exo1.Entity.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import java.util.List;
 
 public class UserDAO {
-    private EntityManager _em;
+    private final EntityManager _em;
 
     public UserDAO(EntityManagerFactory emf) {
         this._em = emf.createEntityManager();
@@ -33,5 +35,12 @@ public class UserDAO {
             _em.getTransaction().commit();
         }
         _em.close();
+    }
+
+    public List<User> findByName (String name){
+        Query query = _em.createQuery("select u from User u where u.name like :name",User.class);
+        query.setParameter("name","%"+name+"%");
+        List<User> users = query.getResultList();
+        return users;
     }
 }
