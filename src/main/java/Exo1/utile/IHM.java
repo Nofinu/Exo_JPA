@@ -2,7 +2,9 @@ package Exo1.utile;
 
 import Exo1.Entity.Task;
 import Exo1.Entity.Todo;
+import Exo1.Entity.User;
 import Exo1.dao.TodoDAO;
+import Exo1.dao.UserDAO;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -20,6 +22,7 @@ public class IHM {
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa_exo");
     private Scanner scanner;
     private TodoDAO todoDAO;
+    private UserDAO userDAO;
 
     public IHM(){
         scanner = new Scanner(System.in);
@@ -51,6 +54,14 @@ public class IHM {
                 case 6:
                     showTodoBetween();
                     break;
+                case 7:
+                    addUser();
+                    break;
+                case 8:
+                    showAllTodoByUser();
+                    break;
+                case 9:
+                    deleteUser();
                 case 0:
                     break;
                 default :
@@ -72,32 +83,47 @@ public class IHM {
         System.out.println("4-- supprimer une tache");
         System.out.println("5-- afficher les todo avant une date");
         System.out.println("6-- afficher les todos entre 2 dates");
+        System.out.println("7-- ajouter un utilisateur");
+        System.out.println("8-- afficher toute les tache d'un utilisateur");
+        System.out.println("9-- supprimer un utilisateur");
         System.out.println("0-- quitter");
     }
 
     private void addTodo (){
         System.out.println("------ add to do ----");
-        System.out.println("nom de la to do :");
-        String title = scanner.nextLine();
-
-
-        System.out.println("description de la tache :");
-        String description = scanner.nextLine();
-
-        System.out.println("date format(dd-MM-yyyy) :");
-        String dateString = scanner.nextLine();
-        LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-        System.out.println("priorité de la tache :");
-        int priority = scanner.nextInt();
+        System.out.println("id de utilisateur associé a la todo :");
+        int id = scanner.nextInt();
         scanner.nextLine();
 
-        Todo todo = new Todo(title);
-        Task task = new Task(description,date,priority,todo);
-        todo.setTask(task);
+        userDAO = new UserDAO(emf);
+        User user = userDAO.findUserById(id);
 
-        todoDAO = new TodoDAO(emf);
-        todoDAO.addAction(todo);
+        if(user != null){
+            System.out.println("nom de la to do :");
+            String title = scanner.nextLine();
+
+
+            System.out.println("description de la tache :");
+            String description = scanner.nextLine();
+
+            System.out.println("date format(dd-MM-yyyy) :");
+            String dateString = scanner.nextLine();
+            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            System.out.println("priorité de la tache :");
+            int priority = scanner.nextInt();
+            scanner.nextLine();
+
+            Todo todo = new Todo(title,user);
+            Task task = new Task(description,date,priority,todo);
+            todo.setTask(task);
+
+            todoDAO = new TodoDAO(emf);
+            todoDAO.addAction(todo);
+        }else{
+            System.out.println("aucun utilisateur trouver a cette id");
+        }
+
     }
 
     private void showAllTodo (){
@@ -151,6 +177,42 @@ public class IHM {
         todoDAO = new TodoDAO(emf);
         List<Todo> todos = todoDAO.getAllBetweenDate(dateStart,dateEnd);
         todos.forEach(System.out::println);
+    }
+
+    private void addUser (){
+        System.out.println("---------- ajout d'un utilisateur --------");
+        System.out.println("nom :");
+        String name = scanner.nextLine();
+
+        User user = new User(name);
+        userDAO = new UserDAO(emf);
+        userDAO.addUserAction(user);
+    }
+
+    private void showAllTodoByUser (){
+        System.out.println("------- affichage des todo par utilisateur --------");
+        System.out.println("id de l'utilisateur :");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        userDAO = new UserDAO(emf);
+        User user = userDAO.findUserById(id);
+        System.out.println(user.getName()+" :");
+        user.getTodos().forEach(System.out::println);
+    }
+
+    private void deleteUser (){
+        System.out.println("--------- supression d'un utilisateur ----------");
+        System.out.println("id de l'utilisateur :");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        userDAO = new UserDAO(emf);
+        User user = userDAO.findUserById(id);
+        if(user != null){
+            userDAO = new UserDAO(emf);
+            userDAO.deleteUser(user);
+        }
     }
 
 }

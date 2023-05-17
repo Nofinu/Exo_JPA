@@ -12,13 +12,17 @@ public class Todo {
     @OneToOne (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id",unique = true,nullable = false)
     private Task task;
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
 
     public Todo() {
     }
 
-    public Todo(String title) {
+    public Todo(String title, User user) {
         this.title = title;
         this.finish = false;
+        this.user = user;
     }
 
     public String getTitle() {
@@ -59,6 +63,7 @@ public class Todo {
                 "todo_id=" + todo_id +
                 ", title='" + title + '\'' +
                 ", finish=" + finish +
-                ", task=" + task ;
+                ", task=" + task +
+                ", user ="+user;
     }
 }
